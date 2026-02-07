@@ -1,0 +1,132 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  background: red;
+}
+
+:root {
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 214, 219, 220;
+  --background-end-rgb: 255, 255, 255;
+  /* Animation timing */
+  --animation-duration-fast: 200ms;
+  --animation-duration-normal: 300ms;
+  --animation-duration-slow: 500ms;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --foreground-rgb: 255, 255, 255;
+    --background-start-rgb: 0, 0, 0;
+    --background-end-rgb: 0, 0, 0;
+  }
+}
+
+/* Animation utilities */
+.animate-fade-in {
+  animation: fadeIn var(--animation-duration-normal) ease-in-out;
+}
+
+.animate-slide-in-up {
+  animation: slideInUp var(--animation-duration-normal) ease-out;
+}
+
+.animate-bounce {
+  animation: bounce var(--animation-duration-fast) ease-in-out;
+}
+
+.animate-scale-in {
+  animation: scaleIn var(--animation-duration-normal) cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes bounce {
+
+  0%,
+  100% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Hover animations */
+.hover-lift {
+  transition: transform var(--animation-duration-fast) ease-in-out;
+}
+
+.hover-lift:hover {
+  transform: translateY(-4px) scale(1.02);
+}
+
+/* Theme transitions */
+* {
+  transition: background-color var(--animation-duration-normal) ease-in-out,
+    border-color var(--animation-duration-normal) ease-in-out,
+    color var(--animation-duration-normal) ease-in-out,
+    fill var(--animation-duration-normal) ease-in-out,
+    stroke var(--animation-duration-normal) ease-in-out,
+    opacity var(--animation-duration-normal) ease-in-out,
+    transform var(--animation-duration-normal) ease-in-out;
+}
+
+/* More specific theme transition classes */
+.theme-transition-all {
+  transition: all var(--animation-duration-normal) ease-in-out;
+}
+
+.theme-bg-transition {
+  transition: background-color var(--animation-duration-normal) ease-in-out;
+}
+
+.theme-color-transition {
+  transition: color var(--animation-duration-normal) ease-in-out;
+}
+
+.theme-border-transition {
+  transition: border-color var(--animation-duration-normal) ease-in-out;
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: linear-gradient(to bottom,
+      transparent,
+      transparent) rgb(var(--background-end-rgb));
+}

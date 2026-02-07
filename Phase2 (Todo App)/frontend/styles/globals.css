@@ -1,0 +1,123 @@
+@import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
+
+
+@theme {
+    --color-primary-50: #eff6ff;
+    --color-primary-500: #3b82f6;
+    --color-primary-600: #2563eb;
+
+    --color-secondary-50: #f0fdfa;
+    --color-secondary-500: #10b981;
+    --color-secondary-600: #059669;
+
+    --animate-fade-in: fadeIn 0.3s ease-in-out;
+    --animate-slide-in-up: slideInUp 0.3s ease-out;
+    --animate-bounce: bounce 0.2s ease-in-out;
+    --animate-scale-in: scaleIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+
+        to {
+            opacity: 1;
+        }
+    }
+
+    @keyframes slideInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes bounce {
+
+        0%,
+        100% {
+            transform: scale(1);
+        }
+
+        50% {
+            transform: scale(1.05);
+        }
+    }
+
+    @keyframes scaleIn {
+        from {
+            transform: scale(0.95);
+            opacity: 0;
+        }
+
+        to {
+            transform: scale(1);
+            opacity: 1;
+        }
+    }
+}
+
+/* Base Styles */
+/* Base Styles */
+/* body Styles handled by Tailwind classes in layout.tsx */
+
+/* Custom Component Classes */
+
+/* Button styles */
+.btn-gradient {
+    @apply bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-4 py-2 rounded-lg cursor-pointer transition-all duration-200 shadow-sm border-0;
+}
+
+.btn-gradient:hover {
+    @apply from-blue-700 to-indigo-700 -translate-y-[1px] shadow-md;
+}
+
+/* Card styles */
+.card {
+    @apply bg-white/60 backdrop-blur-md rounded-2xl p-6 border border-white/20 shadow-lg;
+}
+
+.dark .card {
+    @apply bg-slate-800/60 border-white/10;
+}
+
+/* Task item styles */
+.task-item {
+    @apply bg-white/60 backdrop-blur-md rounded-2xl p-5 mb-4 border border-slate-200/50 transition-all duration-200;
+}
+
+.task-item:hover {
+    @apply -translate-y-[2px] shadow-md;
+}
+
+.dark .task-item {
+    @apply bg-slate-800/60 border-slate-700/50;
+}
+
+/* Form styles */
+.form-input {
+    @apply w-full px-4 py-3 border border-slate-200 rounded-xl bg-white/50 backdrop-blur-md transition-all duration-200;
+}
+
+.form-input:focus {
+    @apply outline-none border-blue-500 ring-2 ring-blue-500/20;
+}
+
+.dark .form-input {
+    @apply bg-slate-800/50 border-slate-600 text-slate-200;
+}
+
+/* Hover animations */
+.hover-lift {
+    @apply transition-transform duration-200 ease-in-out;
+}
+
+.hover-lift:hover {
+    @apply -translate-y-1 scale-[1.02];
+}

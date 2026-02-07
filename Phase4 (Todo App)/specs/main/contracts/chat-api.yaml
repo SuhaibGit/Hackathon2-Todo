@@ -1,0 +1,329 @@
+openapi: 3.0.3
+info:
+  title: Todo AI Chatbot API
+  description: API for the AI-powered chatbot feature that allows users to manage todo tasks via natural language using Google Gemini
+  version: 1.0.0
+servers:
+  - url: http://localhost:8000/api
+    description: Local development server
+paths:
+  /{user_id}/chat:
+    post:
+      summary: Send a message to the AI chatbot
+      description: |
+        Send a message to the Google Gemini AI assistant to perform todo management operations.
+        Creates a new conversation if conversation_id is not provided.
+        Loads conversation history before processing.
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          description: The authenticated user's ID
+          schema:
+            type: string
+        - name: conversation_id
+          in: query
+          required: false
+          description: Optional conversation ID to continue an existing conversation
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - message
+              properties:
+                message:
+                  type: string
+                  description: The user's message in natural language
+                  example: "add a task to buy milk and bread"
+      responses:
+        '200':
+          description: Successful response from the AI assistant
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - response
+                  - conversation_id
+                properties:
+                  response:
+                    type: string
+                    description: The AI assistant's response
+                    example: "Added task: Buy milk and bread"
+                  conversation_id:
+                    type: string
+                    description: The ID of the conversation (newly created or existing)
+                    example: "123e4567-e89b-12d3-a456-426614174000"
+                  tool_calls:
+                    type: array
+                    description: Optional list of tools that were called during processing
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                          description: Name of the tool that was called
+                        parameters:
+                          type: object
+                          description: Parameters passed to the tool
+                        result:
+                          type: object
+                          description: Result returned by the tool
+        '400':
+          description: Bad request - invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized - invalid or missing authentication
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden - user trying to access another user's data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not found - conversation ID does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /{user_id}/conversations:
+    get:
+      summary: List user's conversations
+      description: Retrieve a list of all conversations belonging to the specified user
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          description: The authenticated user's ID
+          schema:
+            type: string
+        - name: limit
+          in: query
+          required: false
+          description: Maximum number of conversations to return
+          schema:
+            type: integer
+            default: 10
+        - name: offset
+          in: query
+          required: false
+          description: Number of conversations to skip
+          schema:
+            type: integer
+            default: 0
+      responses:
+        '200':
+          description: List of user's conversations
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - conversations
+                  - total
+                properties:
+                  conversations:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Conversation'
+                  total:
+                    type: integer
+                    description: Total number of conversations for the user
+        '401':
+          description: Unauthorized - invalid or missing authentication
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden - user trying to access another user's data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /{user_id}/conversations/{conversation_id}:
+    get:
+      summary: Get conversation details
+      description: Retrieve details of a specific conversation and its messages
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          description: The authenticated user's ID
+          schema:
+            type: string
+        - name: conversation_id
+          in: path
+          required: true
+          description: The ID of the conversation to retrieve
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Conversation details with message history
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConversationWithMessages'
+        '401':
+          description: Unauthorized - invalid or missing authentication
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden - user trying to access another user's conversation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not found - conversation does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    Conversation:
+      type: object
+      required:
+        - id
+        - user_id
+        - title
+        - created_at
+        - updated_at
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique identifier for the conversation
+          example: "123e4567-e89b-12d3-a456-426614174000"
+        user_id:
+          type: string
+          description: ID of the user who owns the conversation
+          example: "user_abc123"
+        title:
+          type: string
+          description: Auto-generated title for the conversation
+          example: "Task management session"
+        created_at:
+          type: string
+          format: date-time
+          description: When the conversation was created
+          example: "2023-10-20T10:00:00Z"
+        updated_at:
+          type: string
+          format: date-time
+          description: When the conversation was last updated
+          example: "2023-10-20T10:30:00Z"
+    Message:
+      type: object
+      required:
+        - id
+        - role
+        - content
+        - created_at
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique identifier for the message
+          example: "234f5678-f90c-23e4-b567-537725285111"
+        role:
+          type: string
+          enum: [user, assistant, tool]
+          description: The role of the message sender
+        content:
+          type: string
+          description: The content of the message
+        tool_calls:
+          type: array
+          description: Details of tools called by assistant
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                description: ID of the tool call
+              type:
+                type: string
+                description: Type of tool (usually "function")
+              function:
+                type: object
+                properties:
+                  name:
+                    type: string
+                    description: Name of the function called
+                  arguments:
+                    type: string
+                    description: JSON string of arguments passed to function
+        created_at:
+          type: string
+          format: date-time
+          description: When the message was created
+          example: "2023-10-20T10:15:00Z"
+    ConversationWithMessages:
+      type: object
+      required:
+        - conversation
+        - messages
+      properties:
+        conversation:
+          $ref: '#/components/schemas/Conversation'
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/Message'
+        message_count:
+          type: integer
+          description: Number of messages in the conversation
+    Error:
+      type: object
+      required:
+        - error
+        - message
+      properties:
+        error:
+          type: string
+          description: Error code
+          example: "BAD_REQUEST"
+        message:
+          type: string
+          description: Human-readable error message
+          example: "Invalid input parameters"
+tags:
+  - name: chat
+    description: Google Gemini-powered chatbot for todo management
+  - name: conversations
+    description: Manage conversation history and metadata
