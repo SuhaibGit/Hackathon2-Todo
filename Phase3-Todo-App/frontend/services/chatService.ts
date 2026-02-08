@@ -1,4 +1,11 @@
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8001';
+const getApiBaseUrl = () => {
+    if (typeof window !== 'undefined') {
+        // Client-side: use environment variable or fallback
+        return process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8001';
+    }
+    // Server-side: return a placeholder (API calls should only happen client-side)
+    return process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8001';
+};
 
 export interface ChatMessage {
     role: 'user' | 'assistant' | 'tool';
@@ -30,6 +37,7 @@ const getAuthToken = () => {
 
 export const chatService = {
     sendMessage: async (userId: string, message: string, conversationId?: string): Promise<ChatResponse> => {
+        const API_BASE_URL = getApiBaseUrl();
         const url = new URL(`${API_BASE_URL}/api/${userId}/chat`);
         if (conversationId) {
             url.searchParams.append('conversation_id', conversationId);
@@ -55,6 +63,7 @@ export const chatService = {
     },
 
     getConversations: async (userId: string): Promise<{ conversations: Conversation[], total: number }> => {
+        const API_BASE_URL = getApiBaseUrl();
         const token = getAuthToken();
         const response = await fetch(`${API_BASE_URL}/api/${userId}/conversations`, {
             headers: {
@@ -70,6 +79,7 @@ export const chatService = {
     },
 
     getConversationDetails: async (userId: string, conversationId: string): Promise<{ conversation: Conversation, messages: ChatMessage[] }> => {
+        const API_BASE_URL = getApiBaseUrl();
         const token = getAuthToken();
         const response = await fetch(`${API_BASE_URL}/api/${userId}/conversations/${conversationId}`, {
             headers: {

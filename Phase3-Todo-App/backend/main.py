@@ -12,10 +12,10 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.ALLOWED_ORIGINS,
     allow_credentials=True,
-    allow_methods=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
     allow_headers=["*"],
-    # Expose authorization header to allow JWT to be sent back to frontend
-    expose_headers=["Authorization"]
+    expose_headers=["Authorization"],
+    max_age=3600,  # Cache preflight requests for 1 hour
 )
 
 # Include routers

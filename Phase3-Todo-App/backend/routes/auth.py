@@ -78,3 +78,13 @@ async def signin(user_data: UserAuth, session: Session = Depends(get_session)):
             "email": user.email
         }
     }
+
+# Explicit OPTIONS handlers for CORS preflight
+@router.options("/signin")
+async def signin_options():
+    return {}
+
+@router.options("/signup")
+async def signup_options():
+    return {}
+

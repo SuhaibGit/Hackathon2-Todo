@@ -1,11 +1,27 @@
+# Web Framework
 fastapi==0.104.1
+uvicorn[standard]==0.24.0
+
+# Database
 sqlmodel==0.0.16
-uvicorn==0.24.0
+psycopg2-binary==2.9.9
+
+# Authentication & Security
 python-jose[cryptography]==3.3.0
-pydantic==2.8.2
+passlib[bcrypt]==1.7.4
 python-multipart==0.0.9
+
+# Validation & Settings
+pydantic==2.8.2
+pydantic-settings==2.8.1
+email-validator==2.2.0
+
+# Environment & HTTP
 python-dotenv==1.0.0
 httpx==0.25.2
+
+# AI Integration
+google-genai==0.6.0
 passlib[bcrypt]==1.7.4
 psycopg2-binary==2.9.9
 google-genai==0.6.0

@@ -16,7 +16,7 @@ if __name__ == "__main__":
     uvicorn.run(
         app,
         host="0.0.0.0",
-        port=int(os.getenv("PORT", 8001)),  # Changed to port 8001 to avoid conflict
+        port=int(os.getenv("PORT", 8001)),  # Hugging Face default is 8080
         reload=False,  # Disable reload to avoid subprocess issues
         log_level="info"
     )
